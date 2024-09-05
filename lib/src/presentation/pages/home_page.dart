@@ -9,10 +9,15 @@ class HomePageWithDrawer extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chatbot'),
+        backgroundColor: Colors.black, // Dark AppBar background
       ),
       drawer: _buildDrawer(context),
       body: const Center(
-        child: Text('Home Screen'),
+        child: Text(
+          'Home Screen',
+          style: TextStyle(
+              color: Colors.white), // Ensure text is white in dark mode
+        ),
       ),
     );
   }
@@ -20,22 +25,24 @@ class HomePageWithDrawer extends StatelessWidget {
   Drawer _buildDrawer(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Colors.black, // Dark background like in the screenshot
+        color: Colors.black, // Dark background for the drawer
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             // Search Bar at the top
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
               child: TextField(
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(
+                    color: Colors.white), // White text for input
                 decoration: InputDecoration(
                   hintText: 'Search',
-                  hintStyle: TextStyle(color: Colors.white60),
-                  prefixIcon: Icon(Icons.search, color: Colors.white60),
+                  hintStyle: const TextStyle(color: Colors.white60),
+                  prefixIcon: const Icon(Icons.search, color: Colors.white60),
                   filled: true,
-                  fillColor: Colors.grey,
-                  border: OutlineInputBorder(
+                  fillColor: Colors
+                      .grey[800], // Darker grey background for the search bar
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     borderSide: BorderSide.none,
                   ),
@@ -43,7 +50,7 @@ class HomePageWithDrawer extends StatelessWidget {
               ),
             ),
 
-            // Menu items
+            // Menu items with white text and icons
             ListTile(
               leading: const Icon(Icons.chat, color: Colors.white),
               title: const Text(
@@ -67,7 +74,7 @@ class HomePageWithDrawer extends StatelessWidget {
               },
             ),
 
-            const Divider(color: Colors.white12),
+            const Divider(color: Colors.white12), // Light divider
 
             // Empty space to push profile to the bottom
             const Spacer(),
@@ -75,7 +82,8 @@ class HomePageWithDrawer extends StatelessWidget {
             // Profile Section
             ListTile(
               leading: const CircleAvatar(
-                backgroundColor: Colors.white24,
+                backgroundColor: Colors
+                    .white24, // Slight transparency for the avatar background
                 child: Icon(Icons.person, color: Colors.white),
               ),
               title: const Text(
