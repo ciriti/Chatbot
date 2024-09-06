@@ -11,7 +11,7 @@ final modelProviderServiceProvider = Provider((ref) => ModelProviderService());
 final chatApiProvider = Provider((ref) {
   final dio = ref.watch(dioProvider);
   final modelProviderService = ref.watch(modelProviderServiceProvider);
-  return ChatApi(dio);
+  return ChatApi(dio, modelProviderService);
 });
 
 final chatRepositoryProvider = Provider((ref) {

@@ -18,7 +18,7 @@ class ChatPageState extends ConsumerState<ChatPage> {
   bool hasApiKey = false;
   String apiKey = '';
   String selectedProvider = 'OpenAI'; // Default provider
-  String selectedModel = 'gpt-4'; // Default model
+  String selectedModel = 'gpt-3.5-turbo'; // Default model
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class ChatPageState extends ConsumerState<ChatPage> {
     apiKey = prefs.getString('apiKey') ?? '';
     // Load selected provider and model from SharedPreferences
     selectedProvider = prefs.getString('modelProvider') ?? 'OpenAI';
-    selectedModel = prefs.getString('model') ?? 'gpt-4';
+    selectedModel = prefs.getString('model') ?? 'gpt-3.5-turbo';
     setState(() {
       hasApiKey = apiKey.isNotEmpty;
     });
@@ -39,7 +39,9 @@ class ChatPageState extends ConsumerState<ChatPage> {
 
   void _handleSubmitted(String message) {
     if (message.isNotEmpty && hasApiKey) {
-      ref.read(chatServiceProvider.notifier).sendMessage(message);
+      ref
+          .read(chatServiceProvider.notifier)
+          .sendMessage(message, selectedProvider, selectedModel);
       _textController.clear();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

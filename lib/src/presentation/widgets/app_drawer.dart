@@ -67,7 +67,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
     // Available providers and models
     final List<String> availableProviders = ['OpenAI'];
-    final List<String> openAIModels = ['gpt-3.5-turbo', 'gpt-4'];
+    final List<String> openAIModels = ['gpt-3.5-turbo', 'gpt-4o'];
 
     await showDialog(
       context: context,

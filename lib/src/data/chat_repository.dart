@@ -8,10 +8,9 @@ class ChatRepository {
 
   ChatRepository(this._api, this._modelProviderService);
 
-  Future<String> getChatResponse(String message) async {
+  Future<String> getChatResponse(
+      String message, String providerName, String modelName) async {
     // Pass the providerName and message to ChatApi to handle the API call
-    return await _api.sendMessage(
-      message,
-    );
+    return await _api.sendMessage(message, providerName, modelName);
   }
 }

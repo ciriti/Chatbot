@@ -10,7 +10,7 @@ class ModelConfigPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final modelProviders = ['OpenAI'];
-    final openAIModels = ['gpt-3.5-turbo', 'gpt-4', 'davinci'];
+    final openAIModels = ['gpt-3.5-turbo', 'gpt-4o', 'davinci'];
 
     final selectedModelProvider = ref.watch(modelProviderStateProvider);
     final selectedModel = ref.watch(modelStateProvider);

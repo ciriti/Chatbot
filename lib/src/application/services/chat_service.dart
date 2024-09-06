@@ -9,11 +9,16 @@ class ChatService extends _$ChatService {
   @override
   List<ChatMessage> build() => [];
 
-  Future<void> sendMessage(String userMessage) async {
+  Future<void> sendMessage(
+      String userMessage, String providerName, String modelName) async {
     state = [...state, ChatMessage(content: userMessage, isBot: false)];
 
     final repository = ref.read(chatRepositoryProvider);
-    final botResponse = await repository.getChatResponse(userMessage);
+    final botResponse = await repository.getChatResponse(
+      userMessage,
+      providerName,
+      modelName,
+    );
 
     state = [...state, ChatMessage(content: botResponse, isBot: true)];
   }
