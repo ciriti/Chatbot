@@ -17,4 +17,8 @@ class ChatService extends _$ChatService {
 
     state = [...state, ChatMessage(content: botResponse, isBot: true)];
   }
+
+  void clearMessages() {
+    state = [];
+  }
 }
