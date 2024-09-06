@@ -4,11 +4,26 @@ import 'package:ztc/src/application/services/chat_service.dart';
 import 'package:ztc/src/presentation/widgets/app_drawer.dart';
 import 'package:ztc/src/utils/app_sizes.dart';
 
-class ChatPage extends ConsumerWidget {
+class ChatPage extends ConsumerStatefulWidget {
   const ChatPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _ChatPageState createState() => _ChatPageState();
+}
+
+class _ChatPageState extends ConsumerState<ChatPage> {
+  final TextEditingController _textController = TextEditingController();
+  bool hasApiKey = true; // Replace with your actual logic to check for API key
+
+  void _handleSubmitted(String message) {
+    if (message.isNotEmpty) {
+      ref.read(chatServiceProvider.notifier).sendMessage(message);
+      _textController.clear(); // Clear the text field after submission
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final chatMessages = ref.watch(chatServiceProvider);
 
     return Scaffold(
@@ -18,6 +33,7 @@ class ChatPage extends ConsumerWidget {
       drawer: const AppDrawer(),
       body: Column(
         children: [
+          // Display the chat messages
           Expanded(
             child: ListView.builder(
               itemCount: chatMessages.length,
@@ -42,22 +58,33 @@ class ChatPage extends ConsumerWidget {
               },
             ),
           ),
+
+          // Input section with TextField and IconButton
           Padding(
             padding: insets8,
             child: Row(
               children: [
+                // TextField for user input
                 Expanded(
                   child: TextField(
-                    controller: TextEditingController(),
-                    onSubmitted: (value) {
-                      ref.read(chatServiceProvider.notifier).sendMessage(value);
-                    },
-                    decoration: const InputDecoration(
+                    controller: _textController,
+                    onSubmitted: (value) => _handleSubmitted(value),
+                    decoration: InputDecoration(
                       hintText: 'Enter your message',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: !hasApiKey
+                            ? null
+                            : () => _handleSubmitted(_textController.text),
+                      ),
                     ),
                   ),
                 ),
+
+                // Send IconButton
               ],
             ),
           ),
