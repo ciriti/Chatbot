@@ -1,8 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ztc/src/utils/app_sizes.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({super.key});
+  final VoidCallback onApiKeyUpdated;
+
+  const AppDrawer({super.key, required this.onApiKeyUpdated});
+
+  Future<void> _onOpenSettings(BuildContext context) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String apiKey = prefs.getString('apiKey') ?? '';
+    String newApiKey = apiKey;
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Set API Key'),
+          content: TextFormField(
+            initialValue: newApiKey,
+            obscureText: true,
+            decoration: const InputDecoration(hintText: 'Enter your API key'),
+            onChanged: (value) => newApiKey = value,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () async {
+                await prefs.setString('apiKey', newApiKey);
+                onApiKeyUpdated();
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +86,7 @@ class AppDrawer extends StatelessWidget {
                 'Settings',
                 style: TextStyle(color: Colors.white),
               ),
-              onTap: () {
-                // Handle Settings tap
-              },
+              onTap: () => _onOpenSettings(context), // Open settings dialog
             ),
             const Divider(color: Colors.white12),
             const Spacer(),
