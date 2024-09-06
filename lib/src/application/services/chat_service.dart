@@ -10,7 +10,10 @@ class ChatService extends _$ChatService {
   List<ChatMessage> build() => [];
 
   Future<void> sendMessage(
-      String userMessage, String providerName, String modelName) async {
+    String userMessage,
+    String providerName,
+    String modelName,
+  ) async {
     state = [...state, ChatMessage(content: userMessage, isBot: false)];
 
     final repository = ref.read(chatRepositoryProvider);

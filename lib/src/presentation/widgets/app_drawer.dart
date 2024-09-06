@@ -21,47 +21,10 @@ class AppDrawer extends StatefulWidget {
 class _AppDrawerState extends State<AppDrawer> {
   Future<void> _onOpenSettings(BuildContext context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Fetch saved API key, provider, and model from SharedPreferences
     String apiKey = prefs.getString('apiKey') ?? '';
     String newApiKey = apiKey;
-
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Set API Key'),
-          content: TextFormField(
-            initialValue: newApiKey,
-            obscureText: true,
-            decoration: const InputDecoration(hintText: 'Enter your API key'),
-            onChanged: (value) => newApiKey = value,
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            TextButton(
-              child: const Text('Save'),
-              onPressed: () async {
-                await prefs.setString('apiKey', newApiKey);
-                widget.onApiKeyUpdated();
-                if (mounted) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _onOpenModelProviderSettings(BuildContext context) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // Fetch saved provider and model from SharedPreferences
     String selectedProvider = prefs.getString('modelProvider') ?? 'OpenAI';
     String selectedModel = prefs.getString('model') ?? 'gpt-3.5-turbo';
 
@@ -73,51 +36,67 @@ class _AppDrawerState extends State<AppDrawer> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Set Model Provider'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Dropdown for Model Provider
-              DropdownButtonFormField<String>(
-                value: selectedProvider,
-                items: availableProviders.map((String provider) {
-                  return DropdownMenuItem<String>(
-                    value: provider,
-                    child: Text(provider),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedProvider = newValue!;
-                  });
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Model Provider',
-                  border: OutlineInputBorder(),
+          title: const Text('Settings'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // TextField for API key input
+                TextFormField(
+                  initialValue: newApiKey,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Enter your API key',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    newApiKey = value;
+                  },
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // Dropdown for Model
-              DropdownButtonFormField<String>(
-                value: selectedModel,
-                items: openAIModels.map((String model) {
-                  return DropdownMenuItem<String>(
-                    value: model,
-                    child: Text(model),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedModel = newValue!;
-                  });
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Model',
-                  border: OutlineInputBorder(),
+                // Dropdown for Model Provider
+                DropdownButtonFormField<String>(
+                  value: selectedProvider,
+                  items: availableProviders.map((String provider) {
+                    return DropdownMenuItem<String>(
+                      value: provider,
+                      child: Text(provider),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedProvider = newValue!;
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Model Provider',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+
+                // Dropdown for Model
+                DropdownButtonFormField<String>(
+                  value: selectedModel,
+                  items: openAIModels.map((String model) {
+                    return DropdownMenuItem<String>(
+                      value: model,
+                      child: Text(model),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedModel = newValue!;
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Model',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
           ),
           actions: <Widget>[
             TextButton(
@@ -129,11 +108,15 @@ class _AppDrawerState extends State<AppDrawer> {
             TextButton(
               child: const Text('Save'),
               onPressed: () async {
-                // Save the selected provider and model in SharedPreferences
+                // Save API key, model provider, and model in SharedPreferences
+                await prefs.setString('apiKey', newApiKey);
                 await prefs.setString('modelProvider', selectedProvider);
                 await prefs.setString('model', selectedModel);
 
-                widget.onModelProviderUpdated(); // Callback to notify changes
+                widget.onApiKeyUpdated(); // Callback to notify API key update
+                widget
+                    .onModelProviderUpdated(); // Callback to notify model update
+
                 if (mounted) {
                   Navigator.pop(context);
                 }
@@ -182,20 +165,12 @@ class _AppDrawerState extends State<AppDrawer> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.key, color: Colors.white),
-              title: const Text(
-                'Set Apikey',
-                style: TextStyle(color: Colors.white),
-              ),
-              onTap: () => _onOpenSettings(context),
-            ),
-            ListTile(
               leading: const Icon(Icons.settings, color: Colors.white),
               title: const Text(
-                'Set Model Provider',
+                'Settings',
                 style: TextStyle(color: Colors.white),
               ),
-              onTap: () => _onOpenModelProviderSettings(context),
+              onTap: () => _onOpenSettings(context), // Unified settings dialog
             ),
             const Divider(color: Colors.white12),
             const Spacer(),
