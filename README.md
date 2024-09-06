@@ -102,7 +102,6 @@ The app is built using Clean Architecture, ensuring a clear separation of concer
 ### Prerequisites
 
 - Flutter SDK installed: [Install Flutter](https://flutter.dev/docs/get-started/install)
-- Environment file `.env` with the required API keys.
 
 ### Clone the Repository
 
