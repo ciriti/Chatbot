@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ztc/src/application/services/chat_service.dart';
 import 'package:ztc/src/presentation/widgets/app_drawer.dart';
@@ -54,67 +55,108 @@ class ChatPageState extends ConsumerState<ChatPage> {
   Widget build(BuildContext context) {
     final chatMessages = ref.watch(chatServiceProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chatbot'),
-      ),
-      drawer: AppDrawer(
-        onApiKeyUpdated: _reloadPage,
-        onNewChat: _clearChat,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: chatMessages.length,
-              itemBuilder: (context, index) {
-                final message = chatMessages[index];
-                return ListTile(
-                  title: Align(
-                    alignment: message.isBot
-                        ? Alignment.centerLeft
-                        : Alignment.centerRight,
-                    child: Container(
-                      padding: insets12,
-                      decoration: BoxDecoration(
-                        color:
-                            message.isBot ? Colors.grey[800] : Colors.blue[800],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(message.content),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: insets8,
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textController,
-                    onSubmitted: (value) => _handleSubmitted(value),
-                    decoration: InputDecoration(
-                      hintText: 'Enter your message',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.send),
-                        onPressed: hasApiKey
-                            ? () => _handleSubmitted(_textController.text)
-                            : null,
-                      ),
-                    ),
+    return ResponsiveBuilder(
+      builder: (context, sizingInformation) {
+        bool isLargeScreen =
+            sizingInformation.deviceScreenType == DeviceScreenType.tablet ||
+                sizingInformation.deviceScreenType == DeviceScreenType.desktop;
+
+        return Scaffold(
+          appBar: isLargeScreen
+              ? null // No AppBar on large screens with fixed drawer
+              : AppBar(
+                  title: const Text('Chatbot'),
+                  backgroundColor: Colors.black,
+                  leading: Builder(
+                    // Ensure the menu button is visible on small screens
+                    builder: (context) {
+                      return IconButton(
+                        icon: const Icon(Icons.menu),
+                        onPressed: () => Scaffold.of(context)
+                            .openDrawer(), // Open drawer on small screens
+                      );
+                    },
                   ),
                 ),
-              ],
-            ),
+          // Drawer for small screens
+          drawer: isLargeScreen
+              ? null
+              : AppDrawer(
+                  onApiKeyUpdated: _reloadPage,
+                  onNewChat: _clearChat,
+                ),
+          body: Row(
+            children: [
+              if (isLargeScreen)
+                SizedBox(
+                  width:
+                      250, // Fixed width for the side drawer on large screens
+                  child: AppDrawer(
+                    onApiKeyUpdated: _reloadPage,
+                    onNewChat: _clearChat,
+                  ),
+                ),
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: chatMessages.length,
+                        itemBuilder: (context, index) {
+                          final message = chatMessages[index];
+                          return ListTile(
+                            title: Align(
+                              alignment: message.isBot
+                                  ? Alignment.centerLeft
+                                  : Alignment.centerRight,
+                              child: Container(
+                                padding: insets12,
+                                decoration: BoxDecoration(
+                                  color: message.isBot
+                                      ? Colors.grey[800]
+                                      : Colors.blue[800],
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(message.content),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: insets8,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _textController,
+                              onSubmitted: (value) => _handleSubmitted(value),
+                              decoration: InputDecoration(
+                                hintText: 'Enter your message',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.send),
+                                  onPressed: hasApiKey
+                                      ? () =>
+                                          _handleSubmitted(_textController.text)
+                                      : null,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
