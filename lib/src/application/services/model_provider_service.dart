@@ -1,4 +1,4 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:chatbot/src/application/services/model_provider_config.dart';
 
 class ModelProviderService {
@@ -29,11 +29,12 @@ class ModelProviderService {
     throw Exception('Provider not found for $providerName');
   }
 
-  String? getApiKey(String providerName) {
+  Future<String?> getApiKey(String providerName) async {
+    final prefs = await SharedPreferences.getInstance();
     switch (providerName) {
       case 'OpenAI':
-        return dotenv.env['OPENAI_API_KEY'];
-      // Handle other providers here
+        return prefs
+            .getString('apiKey'); // Retrieve the API key from SharedPreferences
       default:
         return null;
     }
