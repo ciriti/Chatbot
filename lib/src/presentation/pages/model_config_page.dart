@@ -1,4 +1,3 @@
-// lib/src/presentation/pages/model_config_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,11 +9,9 @@ class ModelConfigPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Available model providers and models (can be expanded later)
     final modelProviders = ['OpenAI API'];
     final openAIModels = ['gpt-3.5-turbo', 'gpt-4', 'davinci'];
 
-    // Watch the selected provider and model from Riverpod state
     final selectedModelProvider = ref.watch(modelProviderStateProvider);
     final selectedModel = ref.watch(modelStateProvider);
 
@@ -27,7 +24,6 @@ class ModelConfigPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Model Provider Dropdown
             const Text('Model Provider:', style: TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
@@ -39,7 +35,6 @@ class ModelConfigPage extends ConsumerWidget {
                 );
               }).toList(),
               onChanged: (value) {
-                // Update the selected model provider
                 ref.read(modelProviderStateProvider.notifier).state = value;
               },
               decoration: const InputDecoration(
@@ -47,8 +42,6 @@ class ModelConfigPage extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
-
-            // Model Selection Dropdown (based on selected provider)
             const Text('Model:', style: TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
@@ -60,7 +53,6 @@ class ModelConfigPage extends ConsumerWidget {
                 );
               }).toList(),
               onChanged: (value) {
-                // Update the selected model
                 ref.read(modelStateProvider.notifier).state = value;
               },
               decoration: const InputDecoration(
@@ -68,19 +60,13 @@ class ModelConfigPage extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
-
-            // Display the selected configuration
             const Text('Selected Configuration:'),
             Text('Provider: ${selectedModelProvider ?? 'None'}'),
             Text('Model: ${selectedModel ?? 'None'}'),
-
             const Spacer(),
-
-            // Button to Confirm and Save Configuration
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle saving of the configuration or starting the chat
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(

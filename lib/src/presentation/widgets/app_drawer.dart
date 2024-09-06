@@ -1,43 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:ztc/src/utils/app_sizes.dart';
 
-class HomePageWithDrawer extends StatelessWidget {
-  const HomePageWithDrawer({super.key});
+class AppDrawer extends StatelessWidget {
+  const AppDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chatbot'),
-        backgroundColor: Colors.black,
-      ),
-      drawer: _buildDrawer(context),
-      body: const Center(
-        child: Text(
-          'Home Screen',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
-  }
-
-  Drawer _buildDrawer(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Colors.black,
-        child: ListView(
-          padding: EdgeInsets.zero,
+        color: Colors.black87,
+        child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+            gapH16,
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
               child: TextField(
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Search',
-                  hintStyle: const TextStyle(color: Colors.white60),
-                  prefixIcon: const Icon(Icons.search, color: Colors.white60),
+                  hintStyle: TextStyle(color: Colors.white60),
+                  prefixIcon: Icon(Icons.search, color: Colors.white60),
                   filled: true,
-                  fillColor: Colors.grey[800],
-                  border: const OutlineInputBorder(
+                  fillColor: Colors.grey,
+                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     borderSide: BorderSide.none,
                   ),
@@ -54,14 +39,15 @@ class HomePageWithDrawer extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
+            // Settings item
             ListTile(
-              leading: const Icon(Icons.apps, color: Colors.white),
+              leading: const Icon(Icons.settings, color: Colors.white),
               title: const Text(
-                'Explore GPTs',
+                'Settings',
                 style: TextStyle(color: Colors.white),
               ),
               onTap: () {
-                Navigator.pop(context);
+                // Handle Settings tap
               },
             ),
             const Divider(color: Colors.white12),

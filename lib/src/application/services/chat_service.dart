@@ -1,4 +1,3 @@
-// lib/src/application/services/chat_service.dart
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ztc/src/domain/chat_message.dart';
 import 'package:ztc/src/providers/chat_providers.dart';
