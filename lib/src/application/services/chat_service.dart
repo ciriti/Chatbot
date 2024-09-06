@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:ztc/src/domain/chat_message.dart';
-import 'package:ztc/src/providers/chat_providers.dart';
+import 'package:chatbot/src/domain/chat_message.dart';
+import 'package:chatbot/src/providers/chat_providers.dart';
 
 part 'chat_service.g.dart';
 

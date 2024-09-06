@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ztc/src/application/services/chat_service.dart';
-import 'package:ztc/src/presentation/widgets/app_drawer.dart';
-import 'package:ztc/src/utils/app_sizes.dart';
+import 'package:chatbot/src/application/services/chat_service.dart';
+import 'package:chatbot/src/presentation/widgets/app_drawer.dart';
+import 'package:chatbot/src/utils/app_sizes.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   const ChatPage({super.key});
@@ -17,16 +17,21 @@ class ChatPageState extends ConsumerState<ChatPage> {
   final TextEditingController _textController = TextEditingController();
   bool hasApiKey = false;
   String apiKey = '';
+  String selectedProvider = 'OpenAI'; // Default provider
+  String selectedModel = 'gpt-4'; // Default model
 
   @override
   void initState() {
     super.initState();
-    _loadApiKey();
+    _loadApiKeyAndModel();
   }
 
-  Future<void> _loadApiKey() async {
+  Future<void> _loadApiKeyAndModel() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     apiKey = prefs.getString('apiKey') ?? '';
+    // Load selected provider and model from SharedPreferences
+    selectedProvider = prefs.getString('modelProvider') ?? 'OpenAI';
+    selectedModel = prefs.getString('model') ?? 'gpt-4';
     setState(() {
       hasApiKey = apiKey.isNotEmpty;
     });
@@ -44,7 +49,7 @@ class ChatPageState extends ConsumerState<ChatPage> {
   }
 
   void _reloadPage() {
-    _loadApiKey();
+    _loadApiKeyAndModel();
   }
 
   void _clearChat() {
@@ -84,6 +89,7 @@ class ChatPageState extends ConsumerState<ChatPage> {
               : AppDrawer(
                   onApiKeyUpdated: _reloadPage,
                   onNewChat: _clearChat,
+                  onModelProviderUpdated: _reloadPage,
                 ),
           body: Row(
             children: [
@@ -94,6 +100,7 @@ class ChatPageState extends ConsumerState<ChatPage> {
                   child: AppDrawer(
                     onApiKeyUpdated: _reloadPage,
                     onNewChat: _clearChat,
+                    onModelProviderUpdated: _reloadPage,
                   ),
                 ),
               Expanded(

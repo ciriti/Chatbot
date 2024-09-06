@@ -1,11 +1,21 @@
+import 'package:chatbot/src/application/services/model_provider_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:ztc/src/data/chat_api.dart';
-import 'package:ztc/src/data/chat_repository.dart';
+import 'package:chatbot/src/data/chat_api.dart';
+import 'package:chatbot/src/data/chat_repository.dart';
 import 'package:dio/dio.dart';
 
 final dioProvider = Provider((ref) => Dio());
 
-final chatApiProvider = Provider((ref) => ChatApi(ref.watch(dioProvider)));
+final modelProviderServiceProvider = Provider((ref) => ModelProviderService());
 
-final chatRepositoryProvider =
-    Provider((ref) => ChatRepository(ref.watch(chatApiProvider)));
+final chatApiProvider = Provider((ref) {
+  final dio = ref.watch(dioProvider);
+  final modelProviderService = ref.watch(modelProviderServiceProvider);
+  return ChatApi(dio);
+});
+
+final chatRepositoryProvider = Provider((ref) {
+  final chatApi = ref.watch(chatApiProvider);
+  final modelProviderService = ref.watch(modelProviderServiceProvider);
+  return ChatRepository(chatApi, modelProviderService);
+});

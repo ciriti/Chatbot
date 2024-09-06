@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ChatApi {
   final Dio _dio;
+  // final ModelProviderService _modelProviderService;
 
   ChatApi(this._dio);
 
