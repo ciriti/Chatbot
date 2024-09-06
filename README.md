@@ -132,8 +132,17 @@ You can run the app on various platforms:
 `flutter run -d ios`
 ```
 
-- **macOS**: `flutter run -d macos`
-- **Web**: `flutter run -d chrome`
+- **macOS**:
+
+```bash
+`flutter run -d macos`
+```
+
+- **Web**:
+
+```bash
+`flutter run -d chrome`
+```
 
 For untested platforms (Windows and Linux), try using:
 
