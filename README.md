@@ -120,8 +120,18 @@ flutter pub get
 
 You can run the app on various platforms:
 
-- **Android**: `flutter run -d android`
-- **iOS**: `flutter run -d ios`
+- **Android**: Launch the Android emulator (or connect a device) and then run:
+
+```bash
+`flutter run -d android`
+```
+
+- **iOS**: Launch the iOS simulator (or connect a physical device) before running:
+
+```bash
+`flutter run -d ios`
+```
+
 - **macOS**: `flutter run -d macos`
 - **Web**: `flutter run -d chrome`
 
