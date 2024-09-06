@@ -2,17 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ztc/src/utils/app_sizes.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
   final VoidCallback onApiKeyUpdated;
+  final VoidCallback onNewChat;
 
-  const AppDrawer({super.key, required this.onApiKeyUpdated});
+  const AppDrawer(
+      {super.key, required this.onApiKeyUpdated, required this.onNewChat});
 
+  @override
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
   Future<void> _onOpenSettings(BuildContext context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String apiKey = prefs.getString('apiKey') ?? '';
     String newApiKey = apiKey;
 
     await showDialog(
+      
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -34,8 +42,11 @@ class AppDrawer extends StatelessWidget {
               child: const Text('Save'),
               onPressed: () async {
                 await prefs.setString('apiKey', newApiKey);
-                onApiKeyUpdated();
-                Navigator.pop(context);
+                widget.onApiKeyUpdated();
+                if (mounted) {
+                  
+                  Navigator.pop(context);
+                }
               },
             ),
           ],
@@ -72,21 +83,21 @@ class AppDrawer extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.chat, color: Colors.white),
               title: const Text(
-                'ChatGPT',
+                'New Chat',
                 style: TextStyle(color: Colors.white),
               ),
               onTap: () {
-                Navigator.pop(context);
+                widget.onNewChat(); 
+                Navigator.pop(context); 
               },
             ),
-            // Settings item
             ListTile(
               leading: const Icon(Icons.settings, color: Colors.white),
               title: const Text(
                 'Settings',
                 style: TextStyle(color: Colors.white),
               ),
-              onTap: () => _onOpenSettings(context), // Open settings dialog
+              onTap: () => _onOpenSettings(context),
             ),
             const Divider(color: Colors.white12),
             const Spacer(),
@@ -96,7 +107,7 @@ class AppDrawer extends StatelessWidget {
                 child: Icon(Icons.person, color: Colors.white),
               ),
               title: const Text(
-                'Carmelo Iriti',
+                'User\'s name',
                 style: TextStyle(color: Colors.white),
               ),
               onTap: () {},

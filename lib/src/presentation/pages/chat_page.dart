@@ -9,18 +9,18 @@ class ChatPage extends ConsumerStatefulWidget {
   const ChatPage({super.key});
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  ChatPageState createState() => ChatPageState();
 }
 
-class _ChatPageState extends ConsumerState<ChatPage> {
+class ChatPageState extends ConsumerState<ChatPage> {
   final TextEditingController _textController = TextEditingController();
-  bool hasApiKey = false; // Track if API key is set
+  bool hasApiKey = false;
   String apiKey = '';
 
   @override
   void initState() {
     super.initState();
-    _loadApiKey(); // Load API key when the page is initialized
+    _loadApiKey();
   }
 
   Future<void> _loadApiKey() async {
@@ -34,9 +34,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   void _handleSubmitted(String message) {
     if (message.isNotEmpty && hasApiKey) {
       ref.read(chatServiceProvider.notifier).sendMessage(message);
-      _textController.clear(); // Clear the text field after submission
+      _textController.clear();
     } else {
-      // Optionally show a message if there's no API key
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please set an API key in the settings.')),
       );
@@ -44,7 +43,11 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   void _reloadPage() {
-    _loadApiKey(); // Reload the API key and update the UI
+    _loadApiKey();
+  }
+
+  void _clearChat() {
+    ref.read(chatServiceProvider.notifier).clearMessages();
   }
 
   @override
@@ -55,10 +58,12 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       appBar: AppBar(
         title: const Text('Chatbot'),
       ),
-      drawer: AppDrawer(onApiKeyUpdated: _reloadPage),
+      drawer: AppDrawer(
+        onApiKeyUpdated: _reloadPage,
+        onNewChat: _clearChat,
+      ),
       body: Column(
         children: [
-          // Display the chat messages
           Expanded(
             child: ListView.builder(
               itemCount: chatMessages.length,
@@ -83,13 +88,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               },
             ),
           ),
-
-          // Input section with TextField and IconButton
           Padding(
             padding: insets8,
             child: Row(
               children: [
-                // TextField for user input
                 Expanded(
                   child: TextField(
                     controller: _textController,
@@ -103,7 +105,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                         icon: const Icon(Icons.send),
                         onPressed: hasApiKey
                             ? () => _handleSubmitted(_textController.text)
-                            : null, // Disable button if API key is not set
+                            : null,
                       ),
                     ),
                   ),

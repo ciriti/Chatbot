@@ -1,4 +1,3 @@
-// lib/src/domain/chat_message.dart
 import 'package:equatable/equatable.dart';
 
 class ChatMessage extends Equatable {

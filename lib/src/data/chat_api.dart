@@ -1,6 +1,5 @@
-// lib/src/data/chat_api.dart
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import dotenv
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ChatApi {
   final Dio _dio;
@@ -9,10 +8,8 @@ class ChatApi {
 
   Future<String> sendMessage(String message) async {
     try {
-      // Access the API key from .env
       final apiKey = dotenv.env['OPENAI_API_KEY'];
 
-      // Make the API call
       final response = await _dio.post(
         'https://api.openai.com/v1/chat/completions',
         data: {
