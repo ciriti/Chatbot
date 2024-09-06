@@ -6,12 +6,14 @@ class AppDrawer extends StatefulWidget {
   final VoidCallback onApiKeyUpdated;
   final VoidCallback onNewChat;
   final VoidCallback onModelProviderUpdated;
+  final bool isLargeScreen;
 
   const AppDrawer({
     super.key,
     required this.onApiKeyUpdated,
     required this.onNewChat,
     required this.onModelProviderUpdated,
+    required this.isLargeScreen,
   });
 
   @override
@@ -161,7 +163,9 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
               onTap: () {
                 widget.onNewChat();
-                Navigator.pop(context);
+                if (!widget.isLargeScreen) {
+                  Navigator.pop(context);
+                }
               },
             ),
             ListTile(

@@ -55,12 +55,15 @@ class ChatPageState extends ConsumerState<ChatPage> {
   }
 
   void _clearChat() {
-    ref.read(chatServiceProvider.notifier).clearMessages();
+    ref
+        .read(chatServiceProvider.notifier)
+        .clearMessages(); // Clears chat messages
   }
 
   @override
   Widget build(BuildContext context) {
-    final chatMessages = ref.watch(chatServiceProvider);
+    final chatMessages =
+        ref.watch(chatServiceProvider); // Listens for chat messages
 
     return ResponsiveBuilder(
       builder: (context, sizingInformation) {
@@ -90,8 +93,9 @@ class ChatPageState extends ConsumerState<ChatPage> {
               ? null
               : AppDrawer(
                   onApiKeyUpdated: _reloadPage,
-                  onNewChat: _clearChat,
+                  onNewChat: _clearChat, // Clear chat messages
                   onModelProviderUpdated: _reloadPage,
+                  isLargeScreen: isLargeScreen,
                 ),
           body: Row(
             children: [
@@ -101,37 +105,46 @@ class ChatPageState extends ConsumerState<ChatPage> {
                       250, // Fixed width for the side drawer on large screens
                   child: AppDrawer(
                     onApiKeyUpdated: _reloadPage,
-                    onNewChat: _clearChat,
+                    onNewChat: _clearChat, // Clear chat messages
                     onModelProviderUpdated: _reloadPage,
+                    isLargeScreen: isLargeScreen,
                   ),
                 ),
               Expanded(
                 child: Column(
                   children: [
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: chatMessages.length,
-                        itemBuilder: (context, index) {
-                          final message = chatMessages[index];
-                          return ListTile(
-                            title: Align(
-                              alignment: message.isBot
-                                  ? Alignment.centerLeft
-                                  : Alignment.centerRight,
-                              child: Container(
-                                padding: insets12,
-                                decoration: BoxDecoration(
-                                  color: message.isBot
-                                      ? Colors.grey[800]
-                                      : Colors.blue[800],
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Text(message.content),
+                      child: chatMessages
+                              .isEmpty // If chat messages are empty, show a message
+                          ? const Center(
+                              child: Text(
+                                'No messages yet.',
+                                style: TextStyle(color: Colors.white),
                               ),
+                            )
+                          : ListView.builder(
+                              itemCount: chatMessages.length,
+                              itemBuilder: (context, index) {
+                                final message = chatMessages[index];
+                                return ListTile(
+                                  title: Align(
+                                    alignment: message.isBot
+                                        ? Alignment.centerLeft
+                                        : Alignment.centerRight,
+                                    child: Container(
+                                      padding: insets12,
+                                      decoration: BoxDecoration(
+                                        color: message.isBot
+                                            ? Colors.grey[800]
+                                            : Colors.blue[800],
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Text(message.content),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
                     ),
                     Padding(
                       padding: insets8,
